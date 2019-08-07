@@ -73,7 +73,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\ObjectState\ObjectStateGroup
      */
-    public function createObjectStateGroup(ObjectStateGroupCreateStruct $objectStateGroupCreateStruct)
+    public function createObjectStateGroup(ObjectStateGroupCreateStruct $objectStateGroupCreateStruct): APIObjectStateGroup
     {
         if (!$this->repository->canUser('state', 'administrate', $objectStateGroupCreateStruct)) {
             throw new UnauthorizedException('state', 'administrate');
@@ -111,7 +111,7 @@ class ObjectStateService implements ObjectStateServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function loadObjectStateGroup($objectStateGroupId, array $prioritizedLanguages = [])
+    public function loadObjectStateGroup(int $objectStateGroupId, array $prioritizedLanguages = []): APIObjectStateGroup
     {
         $spiObjectStateGroup = $this->objectStateHandler->loadGroup($objectStateGroupId);
 
@@ -121,7 +121,7 @@ class ObjectStateService implements ObjectStateServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function loadObjectStateGroups($offset = 0, $limit = -1, array $prioritizedLanguages = [])
+    public function loadObjectStateGroups(int $offset = 0, int $limit = -1, array $prioritizedLanguages = []): iterable
     {
         $spiObjectStateGroups = $this->objectStateHandler->loadAllGroups($offset, $limit);
 
@@ -147,7 +147,7 @@ class ObjectStateService implements ObjectStateServiceInterface
     public function loadObjectStates(
         APIObjectStateGroup $objectStateGroup,
         array $prioritizedLanguages = []
-    ) {
+    ): iterable {
         $spiObjectStates = $this->objectStateHandler->loadObjectStates($objectStateGroup->id);
 
         $objectStates = [];
@@ -173,7 +173,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\ObjectState\ObjectStateGroup
      */
-    public function updateObjectStateGroup(APIObjectStateGroup $objectStateGroup, ObjectStateGroupUpdateStruct $objectStateGroupUpdateStruct)
+    public function updateObjectStateGroup(APIObjectStateGroup $objectStateGroup, ObjectStateGroupUpdateStruct $objectStateGroupUpdateStruct): APIObjectStateGroup
     {
         if (!$this->repository->canUser('state', 'administrate', $objectStateGroup)) {
             throw new UnauthorizedException('state', 'administrate');
@@ -225,7 +225,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @param \eZ\Publish\API\Repository\Values\ObjectState\ObjectStateGroup $objectStateGroup
      */
-    public function deleteObjectStateGroup(APIObjectStateGroup $objectStateGroup)
+    public function deleteObjectStateGroup(APIObjectStateGroup $objectStateGroup): void
     {
         if (!$this->repository->canUser('state', 'administrate', $objectStateGroup)) {
             throw new UnauthorizedException('state', 'administrate');
@@ -257,7 +257,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\ObjectState\ObjectState
      */
-    public function createObjectState(APIObjectStateGroup $objectStateGroup, ObjectStateCreateStruct $objectStateCreateStruct)
+    public function createObjectState(APIObjectStateGroup $objectStateGroup, ObjectStateCreateStruct $objectStateCreateStruct): APIObjectState
     {
         if (!$this->repository->canUser('state', 'administrate', $objectStateCreateStruct, [$objectStateGroup])) {
             throw new UnauthorizedException('state', 'administrate');
@@ -307,7 +307,7 @@ class ObjectStateService implements ObjectStateServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function loadObjectState($stateId, array $prioritizedLanguages = [])
+    public function loadObjectState(int $stateId, array $prioritizedLanguages = []): APIObjectState
     {
         $spiObjectState = $this->objectStateHandler->load($stateId);
 
@@ -325,7 +325,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\ObjectState\ObjectState
      */
-    public function updateObjectState(APIObjectState $objectState, ObjectStateUpdateStruct $objectStateUpdateStruct)
+    public function updateObjectState(APIObjectState $objectState, ObjectStateUpdateStruct $objectStateUpdateStruct): APIObjectState
     {
         if (!$this->repository->canUser('state', 'administrate', $objectState)) {
             throw new UnauthorizedException('state', 'administrate');
@@ -382,12 +382,8 @@ class ObjectStateService implements ObjectStateServiceInterface
      * @param \eZ\Publish\API\Repository\Values\ObjectState\ObjectState $objectState
      * @param int $priority
      */
-    public function setPriorityOfObjectState(APIObjectState $objectState, $priority)
+    public function setPriorityOfObjectState(APIObjectState $objectState, int $priority): void
     {
-        if (!is_int($priority)) {
-            throw new InvalidArgumentValue('priority', $priority);
-        }
-
         if (!$this->repository->canUser('state', 'administrate', $objectState)) {
             throw new UnauthorizedException('state', 'administrate');
         }
@@ -415,7 +411,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @param \eZ\Publish\API\Repository\Values\ObjectState\ObjectState $objectState
      */
-    public function deleteObjectState(APIObjectState $objectState)
+    public function deleteObjectState(APIObjectState $objectState): void
     {
         if (!$this->repository->canUser('state', 'administrate', $objectState)) {
             throw new UnauthorizedException('state', 'administrate');
@@ -443,7 +439,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      * @param \eZ\Publish\API\Repository\Values\ObjectState\ObjectStateGroup $objectStateGroup
      * @param \eZ\Publish\API\Repository\Values\ObjectState\ObjectState $objectState
      */
-    public function setContentState(ContentInfo $contentInfo, APIObjectStateGroup $objectStateGroup, APIObjectState $objectState)
+    public function setContentState(ContentInfo $contentInfo, APIObjectStateGroup $objectStateGroup, APIObjectState $objectState): void
     {
         if ($this->repository->canUser('state', 'assign', $contentInfo, $objectState) !== true) {
             throw new UnauthorizedException('state', 'assign', ['contentId' => $contentInfo->id]);
@@ -479,7 +475,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\ObjectState\ObjectState
      */
-    public function getContentState(ContentInfo $contentInfo, APIObjectStateGroup $objectStateGroup)
+    public function getContentState(ContentInfo $contentInfo, APIObjectStateGroup $objectStateGroup): APIObjectState
     {
         $spiObjectState = $this->objectStateHandler->getContentState(
             $contentInfo->id,
@@ -496,7 +492,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @return int
      */
-    public function getContentCount(APIObjectState $objectState)
+    public function getContentCount(APIObjectState $objectState): int
     {
         return $this->objectStateHandler->getContentCount(
             $objectState->id
@@ -510,7 +506,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\ObjectState\ObjectStateGroupCreateStruct
      */
-    public function newObjectStateGroupCreateStruct($identifier)
+    public function newObjectStateGroupCreateStruct(string $identifier): ObjectStateGroupCreateStruct
     {
         $objectStateGroupCreateStruct = new ObjectStateGroupCreateStruct();
         $objectStateGroupCreateStruct->identifier = $identifier;
@@ -523,7 +519,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\ObjectState\ObjectStateGroupUpdateStruct
      */
-    public function newObjectStateGroupUpdateStruct()
+    public function newObjectStateGroupUpdateStruct(): ObjectStateGroupUpdateStruct
     {
         return new ObjectStateGroupUpdateStruct();
     }
@@ -535,7 +531,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\ObjectState\ObjectStateCreateStruct
      */
-    public function newObjectStateCreateStruct($identifier)
+    public function newObjectStateCreateStruct(string $identifier): ObjectStateCreateStruct
     {
         $objectStateCreateStruct = new ObjectStateCreateStruct();
         $objectStateCreateStruct->identifier = $identifier;
@@ -548,7 +544,7 @@ class ObjectStateService implements ObjectStateServiceInterface
      *
      * @return \eZ\Publish\API\Repository\Values\ObjectState\ObjectStateUpdateStruct
      */
-    public function newObjectStateUpdateStruct()
+    public function newObjectStateUpdateStruct(): ObjectStateUpdateStruct
     {
         return new ObjectStateUpdateStruct();
     }
@@ -566,7 +562,7 @@ class ObjectStateService implements ObjectStateServiceInterface
         SPIObjectState $spiObjectState,
         APIObjectStateGroup $objectStateGroup = null,
         array $prioritizedLanguages = []
-    ) {
+    ): APIObjectState {
         $objectStateGroup = $objectStateGroup ?: $this->loadObjectStateGroup($spiObjectState->groupId);
 
         return new ObjectState(
@@ -595,7 +591,7 @@ class ObjectStateService implements ObjectStateServiceInterface
     protected function buildDomainObjectStateGroupObject(
         SPIObjectStateGroup $spiObjectStateGroup,
         array $prioritizedLanguages = []
-    ) {
+    ): APIObjectStateGroup {
         return new ObjectStateGroup(
             [
                 'id' => $spiObjectStateGroup->id,
@@ -615,12 +611,16 @@ class ObjectStateService implements ObjectStateServiceInterface
      * @param string $identifier
      * @param string $defaultLanguageCode
      * @param string[] $names
-     * @param string[] $descriptions
+     * @param string[]|null $descriptions
      *
      * @return \eZ\Publish\SPI\Persistence\Content\ObjectState\InputStruct
      */
-    protected function buildCreateInputStruct($identifier, $defaultLanguageCode, $names, $descriptions)
-    {
+    protected function buildCreateInputStruct(
+        string $identifier,
+        string $defaultLanguageCode,
+        array $names,
+        ?array $descriptions
+    ): InputStruct {
         if (!is_string($identifier) || empty($identifier)) {
             throw new InvalidArgumentValue('identifier', $identifier);
         }
@@ -676,15 +676,20 @@ class ObjectStateService implements ObjectStateServiceInterface
      * Validates input for updating object states and builds the InputStruct object.
      *
      * @param \eZ\Publish\API\Repository\Values\ObjectState\ObjectState $objectState
-     * @param string $identifier
-     * @param string $defaultLanguageCode
-     * @param string[] $names
-     * @param string[] $descriptions
+     * @param string|null $identifier
+     * @param string|null $defaultLanguageCode
+     * @param string[]|null $names
+     * @param string[]|null $descriptions
      *
      * @return \eZ\Publish\SPI\Persistence\Content\ObjectState\InputStruct
      */
-    protected function buildObjectStateUpdateInputStruct(APIObjectState $objectState, $identifier, $defaultLanguageCode, $names, $descriptions)
-    {
+    protected function buildObjectStateUpdateInputStruct(
+        APIObjectState $objectState,
+        ?string $identifier,
+        ?string $defaultLanguageCode,
+        ?array $names,
+        ?array $descriptions
+    ): InputStruct {
         $inputStruct = new InputStruct();
 
         if ($identifier !== null && (!is_string($identifier) || empty($identifier))) {
@@ -744,30 +749,35 @@ class ObjectStateService implements ObjectStateServiceInterface
      * Validates input for updating object state groups and builds the InputStruct object.
      *
      * @param \eZ\Publish\API\Repository\Values\ObjectState\ObjectStateGroup $objectStateGroup
-     * @param string $identifier
-     * @param string $defaultLanguageCode
-     * @param string[] $names
-     * @param string[] $descriptions
+     * @param string|null $identifier
+     * @param string|null $defaultLanguageCode
+     * @param string[]|null $names
+     * @param string[]|null $descriptions
      *
      * @return \eZ\Publish\SPI\Persistence\Content\ObjectState\InputStruct
      */
-    protected function buildObjectStateGroupUpdateInputStruct(APIObjectStateGroup $objectStateGroup, $identifier, $defaultLanguageCode, $names, $descriptions)
-    {
+    protected function buildObjectStateGroupUpdateInputStruct(
+        APIObjectStateGroup $objectStateGroup,
+        ?string $identifier,
+        ?string $defaultLanguageCode,
+        ?array $names,
+        ?array $descriptions
+    ): InputStruct {
         $inputStruct = new InputStruct();
 
-        if ($identifier !== null && (!is_string($identifier) || empty($identifier))) {
+        if ($identifier !== null && empty($identifier)) {
             throw new InvalidArgumentValue('identifier', $identifier);
         }
 
         $inputStruct->identifier = $identifier !== null ? $identifier : $objectStateGroup->identifier;
 
-        if ($defaultLanguageCode !== null && (!is_string($defaultLanguageCode) || empty($defaultLanguageCode))) {
+        if ($defaultLanguageCode !== null && empty($defaultLanguageCode)) {
             throw new InvalidArgumentValue('defaultLanguageCode', $defaultLanguageCode);
         }
 
         $inputStruct->defaultLanguage = $defaultLanguageCode !== null ? $defaultLanguageCode : $objectStateGroup->defaultLanguageCode;
 
-        if ($names !== null && (!is_array($names) || empty($names))) {
+        if ($names !== null && empty($names)) {
             throw new InvalidArgumentValue('names', $names);
         }
 
@@ -787,10 +797,6 @@ class ObjectStateService implements ObjectStateServiceInterface
             if (!is_string($name) || empty($name)) {
                 throw new InvalidArgumentValue('names', $inputStruct->name);
             }
-        }
-
-        if ($descriptions !== null && !is_array($descriptions)) {
-            throw new InvalidArgumentValue('descriptions', $descriptions);
         }
 
         $descriptions = $descriptions !== null ? $descriptions : $objectStateGroup->getDescriptions();
