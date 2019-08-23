@@ -19,6 +19,7 @@ use eZ\Publish\Core\Repository\Permission\PermissionCriterionResolver;
 use eZ\Publish\Core\Repository\Values\User\UserReference;
 use eZ\Publish\Core\Search\Common\BackgroundIndexer;
 use eZ\Publish\SPI\Persistence\Handler as PersistenceHandler;
+use eZ\Publish\SPI\Repository\Strategy\ContentThumbnail\ThumbnailStrategy;
 use eZ\Publish\SPI\Search\Handler as SearchHandler;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -242,6 +243,10 @@ class Repository implements RepositoryInterface
 
     /** @var \Psr\Log\LoggerInterface */
     private $logger;
+    /**
+     * @var \eZ\Publish\SPI\Repository\Strategy\ContentThumbnail\ThumbnailStrategy
+     */
+    private $thumbnailStrategy;
 
     /**
      * Constructor.
@@ -253,6 +258,7 @@ class Repository implements RepositoryInterface
      * @param \eZ\Publish\Core\Search\Common\BackgroundIndexer $backgroundIndexer
      * @param \eZ\Publish\Core\Repository\Helper\RelationProcessor $relationProcessor
      * @param \eZ\Publish\Core\FieldType\FieldTypeRegistry $fieldTypeRegistry
+     * @param \eZ\Publish\SPI\Repository\Strategy\ContentThumbnail\ThumbnailStrategy $thumbnailStrategy
      * @param array $serviceSettings
      * @param \eZ\Publish\API\Repository\Values\User\UserReference|null $user
      * @param \Psr\Log\LoggerInterface|null $logger
@@ -263,6 +269,7 @@ class Repository implements RepositoryInterface
         BackgroundIndexer $backgroundIndexer,
         RelationProcessor $relationProcessor,
         FieldTypeRegistry $fieldTypeRegistry,
+        ThumbnailStrategy $thumbnailStrategy,
         array $serviceSettings = [],
         APIUserReference $user = null,
         LoggerInterface $logger = null
@@ -272,6 +279,7 @@ class Repository implements RepositoryInterface
         $this->backgroundIndexer = $backgroundIndexer;
         $this->relationProcessor = $relationProcessor;
         $this->fieldTypeRegistry = $fieldTypeRegistry;
+        $this->thumbnailStrategy = $thumbnailStrategy;
         $this->serviceSettings = $serviceSettings + [
             'content' => [],
             'contentType' => [],
@@ -897,7 +905,8 @@ class Repository implements RepositoryInterface
             $this->persistenceHandler->contentTypeHandler(),
             $this->getContentTypeDomainMapper(),
             $this->persistenceHandler->contentLanguageHandler(),
-            $this->fieldTypeRegistry
+            $this->fieldTypeRegistry,
+            $this->thumbnailStrategy
         );
 
         return $this->domainMapper;

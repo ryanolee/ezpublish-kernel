@@ -14,6 +14,7 @@ use eZ\Publish\Core\Repository\Helper\RelationProcessor;
 use eZ\Publish\Core\Repository\Values\User\UserReference;
 use eZ\Publish\Core\Search\Common\BackgroundIndexer;
 use eZ\Publish\SPI\Persistence\Handler as PersistenceHandler;
+use eZ\Publish\SPI\Repository\Strategy\ContentThumbnail\ThumbnailStrategy;
 use eZ\Publish\SPI\Search\Handler as SearchHandler;
 use eZ\Publish\SPI\Limitation\Type as SPILimitationType;
 use Psr\Log\LoggerInterface;
@@ -71,6 +72,7 @@ class RepositoryFactory implements ContainerAwareInterface
      * @param \eZ\Publish\Core\Search\Common\BackgroundIndexer $backgroundIndexer
      * @param \eZ\Publish\Core\Repository\Helper\RelationProcessor $relationProcessor
      * @param \eZ\Publish\Core\FieldType\FieldTypeRegistry $fieldTypeRegistry
+     * @param \eZ\Publish\SPI\Repository\Strategy\ContentThumbnail\ThumbnailStrategy $thumbnailStrategy
      *
      * @return \eZ\Publish\API\Repository\Repository
      */
@@ -79,7 +81,8 @@ class RepositoryFactory implements ContainerAwareInterface
         SearchHandler $searchHandler,
         BackgroundIndexer $backgroundIndexer,
         RelationProcessor $relationProcessor,
-        FieldTypeRegistry $fieldTypeRegistry
+        FieldTypeRegistry $fieldTypeRegistry,
+        ThumbnailStrategy $thumbnailStrategy
     ) {
         $config = $this->container->get('ezpublish.api.repository_configuration_provider')->getRepositoryConfig();
 
@@ -89,6 +92,7 @@ class RepositoryFactory implements ContainerAwareInterface
             $backgroundIndexer,
             $relationProcessor,
             $fieldTypeRegistry,
+            $thumbnailStrategy,
             [
                 'role' => [
                     'limitationTypes' => $this->roleLimitations,
