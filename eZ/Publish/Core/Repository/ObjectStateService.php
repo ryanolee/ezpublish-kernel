@@ -621,15 +621,15 @@ class ObjectStateService implements ObjectStateServiceInterface
         array $names,
         ?array $descriptions
     ): InputStruct {
-        if (!is_string($identifier) || empty($identifier)) {
+        if (empty($identifier)) {
             throw new InvalidArgumentValue('identifier', $identifier);
         }
 
-        if (!is_string($defaultLanguageCode) || empty($defaultLanguageCode)) {
+        if (empty($defaultLanguageCode)) {
             throw new InvalidArgumentValue('defaultLanguageCode', $defaultLanguageCode);
         }
 
-        if (!is_array($names) || empty($names)) {
+        if (empty($names)) {
             throw new InvalidArgumentValue('names', $names);
         }
 
@@ -649,7 +649,7 @@ class ObjectStateService implements ObjectStateServiceInterface
             }
         }
 
-        if ($descriptions !== null && !is_array($descriptions)) {
+        if ($descriptions !== null) {
             throw new InvalidArgumentValue('descriptions', $descriptions);
         }
 
@@ -692,13 +692,13 @@ class ObjectStateService implements ObjectStateServiceInterface
     ): InputStruct {
         $inputStruct = new InputStruct();
 
-        if ($identifier !== null && (!is_string($identifier) || empty($identifier))) {
+        if ($identifier !== null && empty($identifier)) {
             throw new InvalidArgumentValue('identifier', $identifier);
         }
 
         $inputStruct->identifier = $identifier !== null ? $identifier : $objectState->identifier;
 
-        if ($defaultLanguageCode !== null && (!is_string($defaultLanguageCode) || empty($defaultLanguageCode))) {
+        if ($defaultLanguageCode !== null && empty($defaultLanguageCode)) {
             throw new InvalidArgumentValue('defaultLanguageCode', $defaultLanguageCode);
         }
 
@@ -724,10 +724,6 @@ class ObjectStateService implements ObjectStateServiceInterface
             if (!is_string($name) || empty($name)) {
                 throw new InvalidArgumentValue('names', $inputStruct->name);
             }
-        }
-
-        if ($descriptions !== null && !is_array($descriptions)) {
-            throw new InvalidArgumentValue('descriptions', $descriptions);
         }
 
         $descriptions = $descriptions !== null ? $descriptions : $objectState->getDescriptions();
