@@ -113,8 +113,23 @@ class ContentDownloadRouteReferenceListener implements EventSubscriberInterface
                     );
                 }
 
-                return $field->value->fileName;
+                return $this->filterURLIllegalFileNameChars($field->value->fileName);
             }
         );
+    }
+
+    /**
+     * Filter out characters that cannot be used in filenames in a download URL.
+     *
+     * @param string $fileName A file name to filter
+     *
+     * @return string File name with illegal characters removed
+     */
+    private function filterURLIllegalFileNameChars($fileName)
+    {
+        $fileName = ltrim($fileName, '(');
+        $fileName = trim($fileName, '/');
+
+        return $fileName;
     }
 }
