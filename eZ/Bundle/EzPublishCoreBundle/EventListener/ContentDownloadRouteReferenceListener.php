@@ -130,6 +130,10 @@ class ContentDownloadRouteReferenceListener implements EventSubscriberInterface
         $fileName = ltrim($fileName, '(');
         $fileName = trim($fileName, '/');
 
+        if ($fileName === '') {
+            $fileName = 'file';
+        }
+
         return $fileName;
     }
 }
