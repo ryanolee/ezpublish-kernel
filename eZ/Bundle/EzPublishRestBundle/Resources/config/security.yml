@@ -34,6 +34,7 @@ services:
             - '@?request_stack'
 
     ezpublish_rest.security.authentication.basic:
+        alias: ezpublish_rest_basic
         class: '%ezpublish_rest.security.authentication.basic.class%'
         arguments:
             - '@ezpublish_rest.security.authentication.provider.pre_auth'
